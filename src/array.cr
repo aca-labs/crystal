@@ -1624,7 +1624,7 @@ class Array(T)
 
   # Removes the first value of `self`, at index 0, or otherwise invokes the given block.
   # This method returns the removed value.
-  # If the array is empty, it invokes the given block.
+  # If the array is empty, it invokes the given block and returns its value.
   #
   # ```
   # a = ["a"]
@@ -2028,6 +2028,10 @@ class Array(T)
       # This is an heuristic. We could always try to move the elements if
       # `@offset_to_buffer` is positive but it might happen that a user does
       # `shift` + `push` in succession and it will produce a lot of memcopies.
+      #
+      # Note: `@offset_to_buffer != 0` is not redundant because `@capacity` might be 1.
+      # and so `@capacity / 2` is 0 and `@offset_to_buffer >= @capacity / 2` would hold
+      # without it.
       if @capacity != 0 && @offset_to_buffer != 0 && @offset_to_buffer >= @capacity / 2
         # Given
         #
